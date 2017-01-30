@@ -8,18 +8,17 @@ void Print( vector< vector<int> > blocks )
 {
   for( int i = 0; i < blocks.size(); i++ )
   {
-    cout<<i<<": ";
+    cout<<i<<":";
     for( int j = 0; j < blocks[i].size(); j++ )
       if( blocks[i][j] >= 0 )
-        cout<<blocks[i][j]<<" ";
+        cout<<" "<<blocks[i][j];
     cout<<endl;
   }
-  cout<<endl;
 }
 
 int GetStackIn( vector< vector<int> > blocks, int number )
 {
-  return ( blocks[number][0] >= 0 ? number : abs(blocks[number][0]) );
+  return ( blocks[number][0] >= 0 ? number : abs(blocks[number][0] + 1) );
 }
 
 void Initialize( vector< vector<int> > &blocks, int number )
@@ -42,7 +41,7 @@ void Move( vector< vector<int> > &blocks, int from, int to )
   bool found = false;
 
   fromStack = &blocks[GetStackIn(blocks, from)];
-  if( fromStack->size() == 1 )
+  if( fromStack->size() == 1 ) //Check to see if this is the last item in the stack, if so leave one to add a pointer if needed
     tempStack.push_back( fromStack->back() );
   else
   {
@@ -58,7 +57,7 @@ void Move( vector< vector<int> > &blocks, int from, int to )
   toStack = &blocks[GetStackIn(blocks, to)];
   do
   {
-    blocks[tempStack.back()][0] = GetStackIn(blocks, to) * -1;
+    blocks[tempStack.back()][0] = ( GetStackIn(blocks, to) * -1 ) - 1; // Create pointer to another stack if needed
     popped = tempStack.back();
     toStack->push_back( popped );
     tempStack.pop_back();
@@ -83,6 +82,7 @@ int main()
   while( actionA != "quit" )
   {
     cin>>a>>actionB>>b;
+    //Checking for illegal moves
     if( a != b && a < numOfBlocks && b < numOfBlocks && GetStackIn( blocks, a ) != GetStackIn( blocks, b ) )
     {
       if( actionA == "move" )
